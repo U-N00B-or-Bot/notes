@@ -4,26 +4,75 @@ import UIKit
 import CoreData
 
 
-
-
-
 class NotesListViewController: UITableViewController {
   
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private var noteList : [Note] = []
-    
-    
-    
+    private var start: [Start] = []
+    private var firstLaunch: Bool!
+    private var countLabel = UILabel()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        fetchDataStart()
+        firstLaunch = start.randomElement()?.firstLaunch
         
         
+        
+        if firstLaunch == true {
+            saveInBtn("Об этом приложении?", "Приложение реализовано согласно ТЗ - можно создавать текстовые заметки, которые можно редактировать и удалять. При первом запуске приложения мы видим данную заметку, которую можно удалить и она не будет появляться снова. Так же на главном экране отображается список всех заметок. Все заметки сохраняются между сессиями. В данном приложении использованы такие концепции и нативные инструменты языка Swift как - UIKit, CoreData, TableViewControllers, UISlider и другие.//PS. Если вы видите эту заметку, то либо вы запустили первый раз приложение, либо после запуска первого приложения вы не стали ее удалять.")
+            
+            start.randomElement()?.firstLaunch = false
+            save()
+        }
+      
         
         fetchData()
 
     
+    }
+
+    private func changeFirstLauch(){
+        let start = Start(context: context)
+        start.firstLaunch = false
+        save()
+    }
+    
+    private func checkFL() {
+        let start = Start(context: context)
+        firstLaunch = start.firstLaunch
+    }
+    
+    private func save() {
+       //let note = Note(context: context)
+      
+    
+       
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                // Replace this implementation with code to handle the error appropriately.
+                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                let nserror = error as NSError
+                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+            }
+        }
+        
+    }
+    
+  
+
+    
+    private func fetchDataStart(){
+        let fetchRequest = Start.fetchRequest()
+        
+        do {
+            start = try context.fetch(fetchRequest)
+        } catch {
+            print("Failed", error)
+        }
     }
 
     private func fetchData(){
@@ -39,13 +88,11 @@ class NotesListViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
+         1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return noteList.count
+         noteList.count
     }
 
     
@@ -53,29 +100,23 @@ class NotesListViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
 
         let note = noteList[indexPath.row]
-       // let note = Single.shared.notes[indexPath.row]
-              
-              var content = cell.defaultContentConfiguration()
+        var content = cell.defaultContentConfiguration()
         content.text = note.title
-      
-              
-              cell.contentConfiguration = content
-
-      
+        cell.contentConfiguration = content
 
         return cell
     }
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
-        let alertController = UIAlertController(title: "Новая заметка", message: "Введите название:", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Новая заметка", message: nil, preferredStyle: .alert)
               let saveAction = UIAlertAction(title: "Сохранить", style: .default) { action in
-                   // let tf = alertController.textFields?.first
+                   
                 
                   
-                  guard let note = alertController.textFields?.first?.text, !note.isEmpty else {return}
+                  guard let note = alertController.textFields?.first?.text, !note.isEmpty else { return }
                    
-                       
+                  
                 
                        
                   self.saveInBtn(note, "Пустая заметка")
@@ -86,15 +127,50 @@ class NotesListViewController: UITableViewController {
                     
                     
                 }
-       
-                alertController.addTextField { _ in}
+        saveAction.isEnabled = false
+              //  alertController.addTextField { _ in}
+        alertController.addTextField { field in
+            
+            
+            
+            field.placeholder = "Введите название заметки"
+                       field.delegate = self
+                       field.returnKeyType = .done
+                       
+                       self.countLabel.text = "0/24"
+                       self.countLabel.font = UIFont.systemFont(ofSize: 10)
+                       self.countLabel.textColor = .black
+                       self.countLabel.textAlignment = .left
+                       field.rightView = self.countLabel
+                       field.rightViewMode = .always
+                       field.rightViewRect(forBounds: CGRect(x: -10, y: 0, width: 30, height: 30))
+            
+            
+            
+            
+            
+            
+            NotificationCenter.default.addObserver(forName: UITextField.textDidChangeNotification, object: field, queue: OperationQueue.main, using:
+                {_ in
+                   
+                    let textCount = field.text?.trimmingCharacters(in: .whitespacesAndNewlines).count ?? 0
+                    let textIsNotEmpty = textCount > 0
+                    
+                    saveAction.isEnabled = textIsNotEmpty
+                
+            })
+        }
+        
+        
+        
                 let cancelAction = UIAlertAction(title: "Отмена", style: .cancel) { _ in}
                 
                 alertController.addAction(saveAction)
                 alertController.addAction(cancelAction)
-                
+    
                 present(alertController, animated: true, completion: nil)
     }
+    
     
     private func saveInBtn(_ noteName: String, _ noteBody: String) {
         let note = Note(context: context)
@@ -120,23 +196,11 @@ class NotesListViewController: UITableViewController {
               guard let VC = segue.destination as? NoteViewController else {return}
               guard let indexPath = tableView.indexPathForSelectedRow else {return}
     
-        
-       // notes[indexPath.row].body = textovoePole
         let text = noteList[indexPath.row].body
-        
-        print(indexPath.row)
-        
-       
         VC.numberIndex = indexPath.row
         VC.info = text ?? "error"
        
           }
-    
-    
- 
-
-    
-    
     
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -163,3 +227,33 @@ class NotesListViewController: UITableViewController {
         }
     
 }
+
+
+
+
+
+extension NotesListViewController: UITextFieldDelegate {
+    func textField(_ field: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = field.text ?? ""
+        guard let stringsRange = Range(range, in: currentText) else { return false }
+        let maxLetters = 24
+        let updatedText = currentText.replacingCharacters(in: stringsRange, with: string)
+        if updatedText.count > maxLetters {
+            UIView.animate(withDuration: 0.1, animations: {
+                self.countLabel.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            }, completion: { (finish) in
+                UIView.animate(withDuration: 0.1, animations: {
+                    self.countLabel.transform = CGAffineTransform.identity
+                })
+            })
+            return false
+        } else {
+            countLabel.text = "\(updatedText.count)/\(maxLetters)"
+            return true
+        }
+    }
+}
+
+
+
+

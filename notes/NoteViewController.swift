@@ -7,35 +7,37 @@ class NoteViewController: UIViewController {
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var info = ""
     var numberIndex: Int!
+    
+    @IBOutlet weak var sliderSize: UISlider!
     @IBOutlet weak var textView: UITextView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         fetchData()
         textView.text = info
+        sliderSize.value = noteList[numberIndex].textSize
+        textView.font = UIFont(name: "Arial", size: CGFloat(sliderSize.value))
+        
 
         // Do any additional setup after loading the view.
+    }
+    @IBAction func sliderAction(_ sender: Any) {
+        textView.font = UIFont(name: "Arial", size: CGFloat(sliderSize.value))
     }
     
     @IBAction func btnPressed(_ sender: Any) {
         
         noteList[numberIndex].body = textView.text
+        noteList[numberIndex].textSize = sliderSize.value
         save()
         dismiss(animated: true, completion: nil)
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+ 
     private func save() {
        //let note = Note(context: context)
-        
+      
     
        
         if context.hasChanges {

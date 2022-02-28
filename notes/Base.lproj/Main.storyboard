@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Список заметок-->
+        <!--Список заметок:-->
         <scene sceneID="d4G-pm-JSW">
             <objects>
                 <tableViewController id="uqz-BH-cuB" customClass="NotesListViewController" customModule="notes" customModuleProvider="target" sceneMemberID="viewController">
@@ -34,7 +34,7 @@
                             <outlet property="delegate" destination="uqz-BH-cuB" id="zaJ-T9-7IJ"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Список заметок" id="vFY-qN-UDI">
+                    <navigationItem key="navigationItem" title="Список заметок:" id="vFY-qN-UDI">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xak-1u-z66">
                             <connections>
                                 <action selector="addButtonPressed:" destination="uqz-BH-cuB" id="MrE-Zl-wye"/>
@@ -120,6 +120,7 @@
                     </view>
                     <connections>
                         <outlet property="noteNameTextField" destination="vQ9-gH-AWF" id="4us-ow-wnl"/>
+                        <outlet property="saveBtn" destination="uUI-ML-OKM" id="j3n-xw-ORg"/>
                         <outlet property="sliderSize" destination="1Fy-vM-vfw" id="XqB-3Y-YFC"/>
                         <outlet property="textView" destination="4PZ-Bb-rDH" id="B9n-sU-YVF"/>
                     </connections>
@@ -135,9 +136,13 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="pLS-CM-a3h">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="91"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.34577525609353627" green="0.45492308649148866" blue="0.74177320075757569" alpha="0.84705882352941175" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
                         <textAttributes key="largeTitleTextAttributes">
-                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </textAttributes>
                     </navigationBar>
                     <connections>

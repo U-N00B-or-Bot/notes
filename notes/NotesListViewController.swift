@@ -25,8 +25,7 @@ class NotesListViewController: UITableViewController {
         super.viewDidLoad()
         
         fetchDataStart()
-        print(start.count)
-        print (start.randomElement()?.isFirst ?? "ERROR")
+        
         if start.count == 0 {
             getStart()}
         //fetchDataStart()
@@ -41,7 +40,7 @@ class NotesListViewController: UITableViewController {
         
         if firstLaunch == true {
             
-            saveInBtn("Первая заметка", "Здравствуйте, это первая пустая заметка")
+            saveInBtn("Первая заметка", "Здравствуйте, это первая пустая заметка, вы можете менять размер шрифта - двигая слайдер.")
           
             
             start.randomElement()?.isFirst = false
@@ -61,7 +60,7 @@ class NotesListViewController: UITableViewController {
 
     
     private func save() {
-       //let note = Note(context: context)
+     
       
     
        

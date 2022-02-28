@@ -13,17 +13,40 @@ class NotesListViewController: UITableViewController {
     private var firstLaunch: Bool!
     private var countLabel = UILabel()
 
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         fetchDataStart()
-        firstLaunch = start.randomElement()?.firstLaunch
+        print(start.count)
+        print (start.randomElement()?.isFirst ?? "ERROR")
+        if start.count == 0 {
+            getStart()}
+        //fetchDataStart()
+        
+        print(start.count)
+        print (start.randomElement()?.isFirst ?? "ERROR")
         
         
+        firstLaunch = start.randomElement()?.isFirst
+        
+     
         
         if firstLaunch == true {
-            saveInBtn("Об этом приложении?", "Приложение реализовано согласно ТЗ - можно создавать текстовые заметки, которые можно редактировать и удалять. При первом запуске приложения мы видим данную заметку, которую можно удалить и она не будет появляться снова. Так же на главном экране отображается список всех заметок. Все заметки сохраняются между сессиями. В данном приложении использованы такие концепции и нативные инструменты языка Swift как - UIKit, CoreData, TableViewControllers, UISlider и другие.//PS. Если вы видите эту заметку, то либо вы запустили первый раз приложение, либо после запуска первого приложения вы не стали ее удалять.")
             
-            start.randomElement()?.firstLaunch = false
+            saveInBtn("Первая заметка", "Здравствуйте, это первая пустая заметка")
+          
+            
+            start.randomElement()?.isFirst = false
+            print(start.count)
+            print (start.randomElement()?.isFirst ?? "ERROR")
             save()
         }
       
@@ -33,16 +56,9 @@ class NotesListViewController: UITableViewController {
     
     }
 
-    private func changeFirstLauch(){
-        let start = Start(context: context)
-        start.firstLaunch = false
-        save()
-    }
+ 
     
-    private func checkFL() {
-        let start = Start(context: context)
-        firstLaunch = start.firstLaunch
-    }
+
     
     private func save() {
        //let note = Note(context: context)
@@ -53,8 +69,7 @@ class NotesListViewController: UITableViewController {
             do {
                 try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+                
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
@@ -66,13 +81,19 @@ class NotesListViewController: UITableViewController {
 
     
     private func fetchDataStart(){
+        
         let fetchRequest = Start.fetchRequest()
+        
+        
         
         do {
             start = try context.fetch(fetchRequest)
         } catch {
             print("Failed", error)
         }
+        
+       
+      
     }
 
     private func fetchData(){
@@ -188,6 +209,16 @@ class NotesListViewController: UITableViewController {
             print(error)
         }
     }
+    
+    private func getStart() {
+        let vakue = Start(context: context)
+        vakue.isFirst = true
+        
+        start.append(vakue)
+        
+
+    }
+    
    
 
   
@@ -199,6 +230,7 @@ class NotesListViewController: UITableViewController {
         let text = noteList[indexPath.row].body
         VC.numberIndex = indexPath.row
         VC.info = text ?? "error"
+        VC.name = noteList[indexPath.row].title ?? "error"
        
           }
     

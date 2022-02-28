@@ -6,7 +6,7 @@
         <attribute name="title" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Start" representedClassName="Start" syncable="YES" codeGenerationType="class">
-        <attribute name="firstLaunch" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isFirst" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
     </entity>
     <elements>
         <element name="Note" positionX="-54" positionY="-9" width="128" height="74"/>
